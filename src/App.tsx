@@ -9,6 +9,8 @@ import Auth from "./pages/Auth";
 import Feed from "./pages/Feed";
 import CreateListing from "./pages/CreateListing";
 import CreateRequest from "./pages/CreateRequest";
+import EditListing from "./pages/EditListing";
+import EditRequest from "./pages/EditRequest";
 import MyListings from "./pages/MyListings";
 import Messages from "./pages/Messages";
 import Profile from "./pages/Profile";
@@ -29,6 +31,8 @@ const App = () => (
             <Route path="/feed" element={<Feed />} />
             <Route path="/create-listing" element={<CreateListing />} />
             <Route path="/create-request" element={<CreateRequest />} />
+            <Route path="/edit-listing/:id" element={<EditListing />} />
+            <Route path="/edit-request/:id" element={<EditRequest />} />
             <Route path="/my-listings" element={<MyListings />} />
             <Route path="/messages" element={<Messages />} />
             <Route path="/profile" element={<Profile />} />
