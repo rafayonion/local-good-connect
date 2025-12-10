@@ -98,6 +98,20 @@ export default function MyListings() {
     fetchListings();
   };
 
+  const deleteRequest = async (requestId: string) => {
+    const { error } = await supabase
+      .from('ngo_requests')
+      .delete()
+      .eq('id', requestId);
+    
+    if (error) {
+      toast.error('Failed to delete request');
+      return;
+    }
+    toast.success('Request deleted');
+    fetchRequests();
+  };
+
   const filterByStatus = (items: DonationListing[], status: ListingStatus) => 
     items.filter(item => item.status === status);
 
@@ -133,7 +147,7 @@ export default function MyListings() {
         </div>
 
         {isNgo ? (
-          // NGO view - show requests
+          // NGO view - show requests with edit/delete
           <div className="space-y-6">
             {requests.length === 0 ? (
               <div className="text-center py-12 text-muted-foreground">
@@ -147,7 +161,27 @@ export default function MyListings() {
             ) : (
               <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
                 {requests.map((request) => (
-                  <RequestCard key={request.id} request={request} showActions={false} />
+                  <div key={request.id} className="space-y-2">
+                    <RequestCard request={request} showActions={false} />
+                    <div className="flex gap-2">
+                      <Button 
+                        size="sm" 
+                        variant="outline" 
+                        className="flex-1"
+                        onClick={() => navigate(`/edit-request/${request.id}`)}
+                      >
+                        Edit
+                      </Button>
+                      <Button 
+                        size="sm" 
+                        variant="destructive" 
+                        className="flex-1"
+                        onClick={() => deleteRequest(request.id)}
+                      >
+                        Delete
+                      </Button>
+                    </div>
+                  </div>
                 ))}
               </div>
             )}
@@ -204,13 +238,50 @@ export default function MyListings() {
                               </Button>
                               <Button 
                                 size="sm" 
-                                variant="destructive" 
+                                variant="secondary"
                                 className="flex-1"
+                                onClick={() => updateListingStatus(listing.id, 'pending_pickup')}
+                              >
+                                Mark Pending
+                              </Button>
+                              <Button 
+                                size="sm" 
+                                variant="destructive" 
                                 onClick={() => deleteListing(listing.id)}
                               >
                                 Delete
                               </Button>
                             </>
+                          )}
+                          {status === 'pending_pickup' && (
+                            <>
+                              <Button 
+                                size="sm" 
+                                variant="donation"
+                                className="flex-1"
+                                onClick={() => updateListingStatus(listing.id, 'collected')}
+                              >
+                                Mark Collected
+                              </Button>
+                              <Button 
+                                size="sm" 
+                                variant="outline"
+                                className="flex-1"
+                                onClick={() => updateListingStatus(listing.id, 'active')}
+                              >
+                                Back to Active
+                              </Button>
+                            </>
+                          )}
+                          {status === 'collected' && (
+                            <Button 
+                              size="sm" 
+                              variant="outline"
+                              className="flex-1"
+                              onClick={() => updateListingStatus(listing.id, 'active')}
+                            >
+                              Relist
+                            </Button>
                           )}
                         </div>
                       </div>
