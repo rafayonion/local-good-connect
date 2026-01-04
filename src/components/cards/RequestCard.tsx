@@ -49,6 +49,18 @@ export function RequestCard({ request, onPledge, showActions = true }: RequestCa
       role="article"
       aria-label={`${request.is_urgent ? 'Urgent ' : ''}Request: ${request.title}`}
     >
+      {/* Type indicator banner for colorblind accessibility */}
+      <div className={`px-3 py-1.5 flex items-center gap-2 border-b ${
+        request.is_urgent 
+          ? 'bg-urgent/10 border-urgent/20' 
+          : 'bg-request/10 border-request/20'
+      }`}>
+        <HandHeart className={`h-4 w-4 ${request.is_urgent ? 'text-urgent' : 'text-request'}`} aria-hidden="true" />
+        <span className={`text-xs font-semibold uppercase tracking-wide ${request.is_urgent ? 'text-urgent' : 'text-request'}`}>
+          {request.is_urgent ? '⚠ Urgent Request' : 'Request'}
+        </span>
+      </div>
+
       <CardContent className="p-4">
         <div className="flex items-start justify-between gap-2 mb-3">
           <div className="flex items-center gap-2">
