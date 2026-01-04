@@ -201,6 +201,68 @@ html.high-contrast .card-hover:hover {
   outline-offset: 2px;
 }
 
+/* Accessibility - Colorblind Modes */
+/* Protanopia (Red-blind) - Uses blue and yellow instead of red/green */
+html.colorblind-protanopia {
+  --donation: 210 80% 50%;
+  --donation-light: 210 70% 95%;
+  --donation-foreground: 210 90% 20%;
+  
+  --request: 45 100% 45%;
+  --request-light: 45 90% 95%;
+  --request-foreground: 45 100% 20%;
+  
+  --urgent: 280 80% 50%;
+  --urgent-light: 280 70% 95%;
+}
+
+/* Deuteranopia (Green-blind) - Uses blue and orange */
+html.colorblind-deuteranopia {
+  --donation: 220 90% 55%;
+  --donation-light: 220 80% 95%;
+  --donation-foreground: 220 100% 20%;
+  
+  --request: 35 100% 50%;
+  --request-light: 35 90% 95%;
+  --request-foreground: 35 100% 20%;
+  
+  --urgent: 320 80% 50%;
+  --urgent-light: 320 70% 95%;
+}
+
+/* Tritanopia (Blue-blind) - Uses red and cyan */
+html.colorblind-tritanopia {
+  --donation: 180 70% 40%;
+  --donation-light: 180 60% 95%;
+  --donation-foreground: 180 80% 20%;
+  
+  --request: 0 80% 55%;
+  --request-light: 0 70% 95%;
+  --request-foreground: 0 90% 20%;
+  
+  --urgent: 330 90% 50%;
+  --urgent-light: 330 80% 95%;
+}
+
+/* Add visual patterns/indicators for colorblind modes */
+html[class*="colorblind-"] .border-donation\/20,
+html[class*="colorblind-"] .border-donation\/40 {
+  border-style: solid;
+  border-width: 2px;
+}
+
+html[class*="colorblind-"] .border-request\/20,
+html[class*="colorblind-"] .border-request\/40 {
+  border-style: dashed;
+  border-width: 2px;
+}
+
+html[class*="colorblind-"] .border-urgent\/40,
+html[class*="colorblind-"] .border-urgent\/60 {
+  border-style: dotted;
+  border-width: 3px;
+}
+
 @layer utilities {
   .gradient-donation {
     @apply bg-gradient-to-br from-donation/20 via-donation/10 to-transparent;

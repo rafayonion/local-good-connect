@@ -4,7 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { SpeakButton } from '@/components/ui/speak-button';
-import { MapPin, Clock, MessageCircle, Package } from 'lucide-react';
+import { MapPin, Clock, MessageCircle, Package, Gift } from 'lucide-react';
 import { formatDistanceToNow } from 'date-fns';
 
 interface DonationCardProps {
@@ -36,6 +36,12 @@ export function DonationCard({ listing, onContact, showActions = true }: Donatio
       role="article"
       aria-label={`Donation: ${listing.title}`}
     >
+      {/* Type indicator banner for colorblind accessibility */}
+      <div className="bg-donation/10 px-3 py-1.5 flex items-center gap-2 border-b border-donation/20">
+        <Gift className="h-4 w-4 text-donation" aria-hidden="true" />
+        <span className="text-xs font-semibold text-donation uppercase tracking-wide">Donation</span>
+      </div>
+
       {listing.image_url && (
         <div className="aspect-[4/3] overflow-hidden bg-donation-light">
           <img

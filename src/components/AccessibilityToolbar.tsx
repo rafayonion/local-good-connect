@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useAccessibility } from '@/hooks/useAccessibility';
+import { useAccessibility, ColorblindMode } from '@/hooks/useAccessibility';
 import { setGlobalSpeechRate } from '@/hooks/useSpeech';
 import { Button } from '@/components/ui/button';
 import { Slider } from '@/components/ui/slider';
@@ -12,13 +12,21 @@ import {
   RotateCcw,
   ChevronUp,
   ChevronDown,
+  Eye,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
+
+const colorblindOptions: { value: ColorblindMode; label: string; description: string }[] = [
+  { value: 'none', label: 'Off', description: 'Default colors' },
+  { value: 'protanopia', label: 'Protanopia', description: 'Red-blind' },
+  { value: 'deuteranopia', label: 'Deuteranopia', description: 'Green-blind' },
+  { value: 'tritanopia', label: 'Tritanopia', description: 'Blue-blind' },
+];
 
 export function AccessibilityToolbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [isMinimized, setIsMinimized] = useState(false);
-  const { settings, setFontSize, toggleHighContrast, setSpeechRate, resetSettings } = useAccessibility();
+  const { settings, setFontSize, toggleHighContrast, setSpeechRate, setColorblindMode, resetSettings } = useAccessibility();
 
   // Sync speech rate with global setting
   useEffect(() => {
@@ -29,13 +37,6 @@ export function AccessibilityToolbar() {
     normal: '100%',
     large: '125%',
     'x-large': '150%',
-  };
-
-  const cycleFontSize = () => {
-    const sizes: Array<'normal' | 'large' | 'x-large'> = ['normal', 'large', 'x-large'];
-    const currentIndex = sizes.indexOf(settings.fontSize);
-    const nextIndex = (currentIndex + 1) % sizes.length;
-    setFontSize(sizes[nextIndex]);
   };
 
   if (!isOpen) {
@@ -55,14 +56,14 @@ export function AccessibilityToolbar() {
   return (
     <div
       className={cn(
-        "fixed bottom-4 left-4 z-50 bg-card border border-border rounded-2xl shadow-2xl transition-all duration-300",
+        "fixed bottom-4 left-4 z-50 bg-card border border-border rounded-2xl shadow-2xl transition-all duration-300 max-h-[80vh] overflow-y-auto",
         isMinimized ? "w-auto" : "w-80"
       )}
       role="toolbar"
       aria-label="Accessibility toolbar"
     >
       {/* Header */}
-      <div className="flex items-center justify-between p-3 border-b border-border">
+      <div className="flex items-center justify-between p-3 border-b border-border sticky top-0 bg-card">
         <div className="flex items-center gap-2">
           <Accessibility className="h-5 w-5 text-primary" />
           {!isMinimized && <span className="font-semibold text-sm">Accessibility</span>}
@@ -114,6 +115,29 @@ export function AccessibilityToolbar() {
                   aria-pressed={settings.fontSize === size}
                 >
                   {size === 'normal' ? 'A' : size === 'large' ? 'A+' : 'A++'}
+                </Button>
+              ))}
+            </div>
+          </div>
+
+          {/* Colorblind Mode */}
+          <div className="space-y-2">
+            <label className="flex items-center gap-2 text-sm font-medium">
+              <Eye className="h-4 w-4" />
+              Colorblind Mode
+            </label>
+            <div className="grid grid-cols-2 gap-2">
+              {colorblindOptions.map((option) => (
+                <Button
+                  key={option.value}
+                  variant={settings.colorblindMode === option.value ? 'default' : 'outline'}
+                  size="sm"
+                  className="flex-col h-auto py-2 text-xs"
+                  onClick={() => setColorblindMode(option.value)}
+                  aria-pressed={settings.colorblindMode === option.value}
+                >
+                  <span className="font-medium">{option.label}</span>
+                  <span className="text-[10px] opacity-70">{option.description}</span>
                 </Button>
               ))}
             </div>

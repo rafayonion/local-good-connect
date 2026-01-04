@@ -1,9 +1,12 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 
+export type ColorblindMode = 'none' | 'protanopia' | 'deuteranopia' | 'tritanopia';
+
 interface AccessibilitySettings {
   fontSize: 'normal' | 'large' | 'x-large';
   highContrast: boolean;
   speechRate: number;
+  colorblindMode: ColorblindMode;
 }
 
 interface AccessibilityContextType {
@@ -11,6 +14,7 @@ interface AccessibilityContextType {
   setFontSize: (size: AccessibilitySettings['fontSize']) => void;
   toggleHighContrast: () => void;
   setSpeechRate: (rate: number) => void;
+  setColorblindMode: (mode: ColorblindMode) => void;
   resetSettings: () => void;
 }
 
@@ -18,6 +22,7 @@ const defaultSettings: AccessibilitySettings = {
   fontSize: 'normal',
   highContrast: false,
   speechRate: 0.9,
+  colorblindMode: 'none',
 };
 
 const AccessibilityContext = createContext<AccessibilityContextType | undefined>(undefined);
@@ -54,6 +59,12 @@ export function AccessibilityProvider({ children }: { children: ReactNode }) {
       root.classList.remove('high-contrast');
     }
     
+    // Colorblind mode
+    root.classList.remove('colorblind-protanopia', 'colorblind-deuteranopia', 'colorblind-tritanopia');
+    if (settings.colorblindMode !== 'none') {
+      root.classList.add(`colorblind-${settings.colorblindMode}`);
+    }
+    
     // Save to localStorage
     localStorage.setItem(STORAGE_KEY, JSON.stringify(settings));
   }, [settings]);
@@ -70,6 +81,10 @@ export function AccessibilityProvider({ children }: { children: ReactNode }) {
     setSettings(prev => ({ ...prev, speechRate }));
   };
 
+  const setColorblindMode = (colorblindMode: ColorblindMode) => {
+    setSettings(prev => ({ ...prev, colorblindMode }));
+  };
+
   const resetSettings = () => {
     setSettings(defaultSettings);
   };
@@ -80,6 +95,7 @@ export function AccessibilityProvider({ children }: { children: ReactNode }) {
       setFontSize,
       toggleHighContrast,
       setSpeechRate,
+      setColorblindMode,
       resetSettings,
     }}>
       {children}
