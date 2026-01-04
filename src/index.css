@@ -131,6 +131,76 @@
   }
 }
 
+/* Accessibility - Font Size Scaling */
+html.font-size-normal {
+  font-size: 16px;
+}
+
+html.font-size-large {
+  font-size: 20px;
+}
+
+html.font-size-x-large {
+  font-size: 24px;
+}
+
+/* Accessibility - High Contrast Mode */
+html.high-contrast {
+  --background: 0 0% 0%;
+  --foreground: 0 0% 100%;
+  
+  --card: 0 0% 5%;
+  --card-foreground: 0 0% 100%;
+  
+  --popover: 0 0% 5%;
+  --popover-foreground: 0 0% 100%;
+  
+  --primary: 60 100% 50%;
+  --primary-foreground: 0 0% 0%;
+  
+  --secondary: 0 0% 15%;
+  --secondary-foreground: 0 0% 100%;
+  
+  --muted: 0 0% 15%;
+  --muted-foreground: 0 0% 70%;
+  
+  --accent: 60 100% 20%;
+  --accent-foreground: 60 100% 80%;
+  
+  --destructive: 0 100% 50%;
+  --destructive-foreground: 0 0% 100%;
+  
+  --border: 0 0% 40%;
+  --input: 0 0% 40%;
+  --ring: 60 100% 50%;
+  
+  --donation: 120 100% 40%;
+  --donation-light: 120 100% 10%;
+  --donation-foreground: 120 100% 80%;
+  
+  --request: 30 100% 50%;
+  --request-light: 30 100% 10%;
+  --request-foreground: 30 100% 90%;
+  
+  --urgent: 0 100% 50%;
+  --urgent-light: 0 100% 10%;
+  
+  --verified: 180 100% 50%;
+}
+
+html.high-contrast * {
+  border-color: hsl(0 0% 40%) !important;
+}
+
+html.high-contrast img {
+  filter: contrast(1.2);
+}
+
+html.high-contrast .card-hover:hover {
+  outline: 3px solid hsl(60 100% 50%);
+  outline-offset: 2px;
+}
+
 @layer utilities {
   .gradient-donation {
     @apply bg-gradient-to-br from-donation/20 via-donation/10 to-transparent;

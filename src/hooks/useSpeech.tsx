@@ -7,6 +7,13 @@ interface UseSpeechOptions {
   lang?: string;
 }
 
+// Global speech rate that can be updated by accessibility settings
+let globalSpeechRate = 0.9;
+
+export function setGlobalSpeechRate(rate: number) {
+  globalSpeechRate = rate;
+}
+
 export function useSpeech(options: UseSpeechOptions = {}) {
   const [isSpeaking, setIsSpeaking] = useState(false);
   const [isSupported, setIsSupported] = useState(false);
@@ -25,7 +32,7 @@ export function useSpeech(options: UseSpeechOptions = {}) {
     window.speechSynthesis.cancel();
 
     const utterance = new SpeechSynthesisUtterance(text);
-    utterance.rate = options.rate ?? 0.9;
+    utterance.rate = options.rate ?? globalSpeechRate;
     utterance.pitch = options.pitch ?? 1;
     utterance.volume = options.volume ?? 1;
     utterance.lang = options.lang ?? 'en-US';
