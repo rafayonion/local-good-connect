@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useTheme } from 'next-themes';
 import { useAccessibility, ColorblindMode } from '@/hooks/useAccessibility';
 import { setGlobalSpeechRate } from '@/hooks/useSpeech';
 import { Button } from '@/components/ui/button';
@@ -13,6 +14,9 @@ import {
   ChevronUp,
   ChevronDown,
   Eye,
+  Sun,
+  Moon,
+  Monitor,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -23,10 +27,23 @@ const colorblindOptions: { value: ColorblindMode; label: string; description: st
   { value: 'tritanopia', label: 'Tritanopia', description: 'Blue-blind' },
 ];
 
+const themeOptions = [
+  { value: 'light', label: 'Light', icon: Sun },
+  { value: 'dark', label: 'Dark', icon: Moon },
+  { value: 'system', label: 'System', icon: Monitor },
+];
+
 export function AccessibilityToolbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [isMinimized, setIsMinimized] = useState(false);
+  const [mounted, setMounted] = useState(false);
+  const { theme, setTheme } = useTheme();
   const { settings, setFontSize, toggleHighContrast, setSpeechRate, setColorblindMode, resetSettings } = useAccessibility();
+
+  // Avoid hydration mismatch
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   // Sync speech rate with global setting
   useEffect(() => {
@@ -63,7 +80,7 @@ export function AccessibilityToolbar() {
       aria-label="Accessibility toolbar"
     >
       {/* Header */}
-      <div className="flex items-center justify-between p-3 border-b border-border sticky top-0 bg-card">
+      <div className="flex items-center justify-between p-3 border-b border-border sticky top-0 bg-card z-10">
         <div className="flex items-center gap-2">
           <Accessibility className="h-5 w-5 text-primary" />
           {!isMinimized && <span className="font-semibold text-sm">Accessibility</span>}
@@ -93,6 +110,32 @@ export function AccessibilityToolbar() {
       {/* Controls */}
       {!isMinimized && (
         <div className="p-4 space-y-5">
+          {/* Theme Toggle */}
+          <div className="space-y-2">
+            <label className="flex items-center gap-2 text-sm font-medium">
+              <Sun className="h-4 w-4" />
+              Theme
+            </label>
+            <div className="flex gap-2">
+              {themeOptions.map((option) => {
+                const Icon = option.icon;
+                return (
+                  <Button
+                    key={option.value}
+                    variant={mounted && theme === option.value ? 'default' : 'outline'}
+                    size="sm"
+                    className="flex-1 text-xs gap-1"
+                    onClick={() => setTheme(option.value)}
+                    aria-pressed={mounted && theme === option.value}
+                  >
+                    <Icon className="h-3 w-3" />
+                    {option.label}
+                  </Button>
+                );
+              })}
+            </div>
+          </div>
+
           {/* Font Size */}
           <div className="space-y-2">
             <div className="flex items-center justify-between">
@@ -189,7 +232,10 @@ export function AccessibilityToolbar() {
           <Button
             variant="ghost"
             className="w-full text-muted-foreground hover:text-foreground"
-            onClick={resetSettings}
+            onClick={() => {
+              resetSettings();
+              setTheme('system');
+            }}
           >
             <RotateCcw className="h-4 w-4 mr-2" />
             Reset to Default
